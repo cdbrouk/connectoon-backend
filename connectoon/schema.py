@@ -28,11 +28,11 @@ class Query(graphene.ObjectType):
 
   def resolve_webtoons(self, info, story=None, style=None, **kwargs):
     if story:
-      if story=='전체': return WebToon.objects.exclude(story='')
+      if story=='전체보기': return WebToon.objects.exclude(story='')
       filter = Q(story__icontains=story)
       return WebToon.objects.filter(filter)
     if style:
-      if style=='전체': return WebToon.objects.exclude(style='')
+      if style=='전체보기': return WebToon.objects.exclude(style='')
       filter = Q(style__icontains=style)
       return WebToon.objects.filter(filter)
     return WebToon.objects.all();
