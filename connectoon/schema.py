@@ -17,7 +17,7 @@ class ToonType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
   authors = graphene.List(AuthorType, search=graphene.String())
-  webtoons = graphene.List(WebToonType, search=graphene.String())
+  webtoons = graphene.List(WebToonType, story=graphene.String(), style=graphene.String())
   toons = graphene.List(ToonType, search=graphene.String()) 
 
   def resolve_authors(self, info, search=None,**kwargs):
@@ -26,11 +26,16 @@ class Query(graphene.ObjectType):
       return Author.objects.filter(filter)
     return Author.objects.all()
 
-  def resolve_webtoons(self, info, search=None,**kwargs):
-    if search:
-      filter = Q(title__icontains=search)
+  def resolve_webtoons(self, info, story=None, style=None, **kwargs):
+    if story:
+      if story=='전체': return WebToon.objects.exclude(story='')
+      filter = Q(story__icontains=story)
       return WebToon.objects.filter(filter)
-    return WebToon.objects.all()  
+    if style:
+      if style=='전체': return WebToon.objects.exclude(style='')
+      filter = Q(style__icontains=style)
+      return WebToon.objects.filter(filter)
+    return WebToon.objects.all();
 
   def resolve_toons(self, info, search=None,**kwargs):
     if search:
